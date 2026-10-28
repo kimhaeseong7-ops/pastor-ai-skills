@@ -5,9 +5,10 @@ import json
 import sys
 import os
 
-_here = os.path.dirname(os.path.abspath(__file__))
+_here = os.path.dirname(os.path.realpath(__file__))  # resolve junction/symlink installs
 sys.path.insert(0, os.path.join(_here, "..", "..", "shared"))
 
+from pdf_utils import FONT_SANS, FONT_SANS_BOLD, FONT_SANS_ITALIC, FONT_SERIF, FONT_SERIF_ITALIC
 from pdf_utils import (
     NAVY, GOLD, BODY_COLOR, SLATE, MED_GRAY,
     build_styles, make_page_footer, create_doc, add_shaded_box,
@@ -20,35 +21,35 @@ from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY
 def build_devotional_styles(base_styles):
     s = dict(base_styles)
     s["devo_header"] = ParagraphStyle(
-        "DevoHeader", fontName="Helvetica", fontSize=10, leading=14,
+        "DevoHeader", fontName=FONT_SANS, fontSize=10, leading=14,
         textColor=MED_GRAY, alignment=TA_CENTER, spaceAfter=2,
     )
     s["devo_date"] = ParagraphStyle(
-        "DevoDate", fontName="Helvetica", fontSize=9, leading=13,
+        "DevoDate", fontName=FONT_SANS, fontSize=9, leading=13,
         textColor=MED_GRAY, alignment=TA_CENTER, spaceAfter=20,
     )
     s["devo_body"] = ParagraphStyle(
-        "DevoBody", fontName="Times-Roman", fontSize=11.5, leading=18,
+        "DevoBody", fontName=FONT_SERIF, fontSize=11.5, leading=18,
         textColor=BODY_COLOR, spaceAfter=12, alignment=TA_JUSTIFY,
     )
     s["devo_scripture"] = ParagraphStyle(
-        "DevoScripture", fontName="Times-Italic", fontSize=11, leading=17,
+        "DevoScripture", fontName=FONT_SERIF_ITALIC, fontSize=11, leading=17,
         textColor=BODY_COLOR, spaceAfter=4,
     )
     s["devo_reference"] = ParagraphStyle(
-        "DevoReference", fontName="Helvetica-Bold", fontSize=9, leading=13,
+        "DevoReference", fontName=FONT_SANS_BOLD, fontSize=9, leading=13,
         textColor=NAVY, spaceAfter=0,
     )
     s["devo_takeaway"] = ParagraphStyle(
-        "DevoTakeaway", fontName="Helvetica-Bold", fontSize=11.5, leading=18,
+        "DevoTakeaway", fontName=FONT_SANS_BOLD, fontSize=11.5, leading=18,
         textColor=NAVY, spaceAfter=16, alignment=TA_CENTER,
     )
     s["devo_closing"] = ParagraphStyle(
-        "DevoClosing", fontName="Times-Italic", fontSize=11, leading=17,
+        "DevoClosing", fontName=FONT_SERIF_ITALIC, fontSize=11, leading=17,
         textColor=SLATE, spaceAfter=12, alignment=TA_JUSTIFY,
     )
     s["devo_signoff"] = ParagraphStyle(
-        "DevoSignoff", fontName="Helvetica", fontSize=10, leading=14,
+        "DevoSignoff", fontName=FONT_SANS, fontSize=10, leading=14,
         textColor=BODY_COLOR, spaceBefore=20,
     )
     return s

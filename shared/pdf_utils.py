@@ -6,6 +6,38 @@ Reusable components for generating branded PDF documents.
 Required: pip install reportlab
 """
 
+import os
+
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+
+# --- Fonts ---
+# Built-in Type 1 fonts have no Hangul glyphs; use the first available Korean TrueType font.
+FONT_SANS, FONT_SANS_BOLD, FONT_SANS_ITALIC = "Helvetica", "Helvetica-Bold", "Helvetica-Oblique"
+FONT_SERIF, FONT_SERIF_ITALIC = "Times-Roman", "Times-Italic"
+_WIN_FONTS = os.path.join(os.environ.get("WINDIR", r"C:\Windows"), "Fonts")
+_HOME = os.path.expanduser("~")
+_KOREAN_FONTS = [  # (regular, bold)
+    (os.path.join(_WIN_FONTS, "malgun.ttf"), os.path.join(_WIN_FONTS, "malgunbd.ttf")),
+    ("/Library/Fonts/NanumGothic.ttf", "/Library/Fonts/NanumGothicBold.ttf"),
+    (_HOME + "/Library/Fonts/NanumGothic.ttf", _HOME + "/Library/Fonts/NanumGothicBold.ttf"),
+    ("/System/Library/Fonts/Supplemental/AppleGothic.ttf", "/System/Library/Fonts/Supplemental/AppleGothic.ttf"),
+    ("/usr/share/fonts/truetype/nanum/NanumGothic.ttf", "/usr/share/fonts/truetype/nanum/NanumGothicBold.ttf"),
+]
+for _regular, _bold in _KOREAN_FONTS:
+    if not (os.path.exists(_regular) and os.path.exists(_bold)):
+        continue
+    try:
+        pdfmetrics.registerFont(TTFont("Korean", _regular))
+        pdfmetrics.registerFont(TTFont("Korean-Bold", _bold))
+    except Exception:
+        continue
+    pdfmetrics.registerFontFamily("Korean", normal="Korean", bold="Korean-Bold",
+                                  italic="Korean", boldItalic="Korean-Bold")
+    FONT_SANS = FONT_SANS_ITALIC = FONT_SERIF = FONT_SERIF_ITALIC = "Korean"
+    FONT_SANS_BOLD = "Korean-Bold"
+    break
+
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.colors import HexColor
@@ -42,78 +74,78 @@ def build_styles():
 
     # --- Title banner styles (white on navy) ---
     s["title"] = ParagraphStyle(
-        "Title", fontName="Helvetica-Bold", fontSize=28, leading=34,
+        "Title", fontName=FONT_SANS_BOLD, fontSize=28, leading=34,
         textColor=WHITE, spaceAfter=2,
     )
     s["passage"] = ParagraphStyle(
-        "Passage", fontName="Helvetica", fontSize=16, leading=22,
+        "Passage", fontName=FONT_SANS, fontSize=16, leading=22,
         textColor=HexColor("#C8D6E5"), spaceAfter=6,
     )
     s["meta"] = ParagraphStyle(
-        "Meta", fontName="Helvetica", fontSize=9, leading=13,
+        "Meta", fontName=FONT_SANS, fontSize=9, leading=13,
         textColor=HexColor("#8899AA"),
     )
 
     # --- Section headers ---
     s["section_header"] = ParagraphStyle(
-        "SectionHeader", fontName="Helvetica-Bold", fontSize=14, leading=18,
+        "SectionHeader", fontName=FONT_SANS_BOLD, fontSize=14, leading=18,
         textColor=NAVY, spaceBefore=24, spaceAfter=2,
     )
 
     # --- Body ---
     s["body"] = ParagraphStyle(
-        "Body", fontName="Times-Roman", fontSize=11, leading=16,
+        "Body", fontName=FONT_SERIF, fontSize=11, leading=16,
         textColor=BODY_COLOR, spaceAfter=10, alignment=TA_JUSTIFY,
     )
     s["body_bold"] = ParagraphStyle(
-        "BodyBold", fontName="Helvetica-Bold", fontSize=11, leading=16,
+        "BodyBold", fontName=FONT_SANS_BOLD, fontSize=11, leading=16,
         textColor=NAVY, spaceAfter=4,
     )
     s["body_label"] = ParagraphStyle(
-        "BodyLabel", fontName="Helvetica-Bold", fontSize=9.5, leading=14,
+        "BodyLabel", fontName=FONT_SANS_BOLD, fontSize=9.5, leading=14,
         textColor=GOLD, spaceAfter=2,
     )
     s["body_content"] = ParagraphStyle(
-        "BodyContent", fontName="Times-Roman", fontSize=11, leading=16,
+        "BodyContent", fontName=FONT_SERIF, fontSize=11, leading=16,
         textColor=BODY_COLOR, spaceAfter=8, leftIndent=0,
         alignment=TA_JUSTIFY,
     )
 
     # --- Bullets ---
     s["bullet"] = ParagraphStyle(
-        "Bullet", fontName="Times-Roman", fontSize=11, leading=16,
+        "Bullet", fontName=FONT_SERIF, fontSize=11, leading=16,
         textColor=BODY_COLOR, leftIndent=18, spaceAfter=8,
-        bulletIndent=4, bulletFontName="Helvetica-Bold",
+        bulletIndent=4, bulletFontName=FONT_SANS_BOLD,
         bulletFontSize=9, bulletColor=GOLD,
     )
 
     # --- Thinking prompts (inside shaded box) ---
     s["prompt"] = ParagraphStyle(
-        "Prompt", fontName="Times-Italic", fontSize=10.5, leading=15,
+        "Prompt", fontName=FONT_SERIF_ITALIC, fontSize=10.5, leading=15,
         textColor=SLATE, spaceAfter=6, leftIndent=0,
     )
 
     # --- Table styles ---
     s["table_header"] = ParagraphStyle(
-        "TableHeader", fontName="Helvetica-Bold", fontSize=8.5,
+        "TableHeader", fontName=FONT_SANS_BOLD, fontSize=8.5,
         leading=11, textColor=WHITE,
     )
     s["table_cell"] = ParagraphStyle(
-        "TableCell", fontName="Helvetica", fontSize=8.5,
+        "TableCell", fontName=FONT_SANS, fontSize=8.5,
         leading=12, textColor=BODY_COLOR,
     )
     s["table_cell_bold"] = ParagraphStyle(
-        "TableCellBold", fontName="Helvetica-Bold", fontSize=8.5,
+        "TableCellBold", fontName=FONT_SANS_BOLD, fontSize=8.5,
         leading=12, textColor=NAVY,
     )
 
     # --- REACHRIGHT banner styles (white on navy) ---
     s["brand_body"] = ParagraphStyle(
-        "BrandBody", fontName="Helvetica", fontSize=9, leading=13,
+        "BrandBody", fontName=FONT_SANS, fontSize=9, leading=13,
         textColor=HexColor("#C8D6E5"),
     )
     s["brand_url"] = ParagraphStyle(
-        "BrandURL", fontName="Helvetica-Bold", fontSize=10, leading=14,
+        "BrandURL", fontName=FONT_SANS_BOLD, fontSize=10, leading=14,
         textColor=GOLD_LIGHT, spaceBefore=4,
     )
 
@@ -337,7 +369,7 @@ def make_page_footer(brand="reachright"):
             canvas_obj.line(margin, 0.6 * inch, page_width - margin, 0.6 * inch)
 
             # "Powered by REACHRIGHT" left
-            canvas_obj.setFont("Helvetica", 7)
+            canvas_obj.setFont(FONT_SANS, 7)
             canvas_obj.setFillColor(MED_GRAY)
             canvas_obj.drawString(margin, 0.42 * inch, "Powered by REACHRIGHT")
 
@@ -354,7 +386,7 @@ def make_page_footer(brand="reachright"):
             canvas_obj.line(margin, 0.6 * inch, page_width - margin, 0.6 * inch)
 
             # Page number right only
-            canvas_obj.setFont("Helvetica", 7)
+            canvas_obj.setFont(FONT_SANS, 7)
             canvas_obj.setFillColor(MED_GRAY)
             page_num = canvas_obj.getPageNumber()
             canvas_obj.drawRightString(

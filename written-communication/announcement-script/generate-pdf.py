@@ -6,9 +6,10 @@ import re
 import sys
 import os
 
-_here = os.path.dirname(os.path.abspath(__file__))
+_here = os.path.dirname(os.path.realpath(__file__))  # resolve junction/symlink installs
 sys.path.insert(0, os.path.join(_here, "..", "..", "shared"))
 
+from pdf_utils import FONT_SANS, FONT_SANS_BOLD, FONT_SANS_ITALIC, FONT_SERIF, FONT_SERIF_ITALIC
 from pdf_utils import (
     NAVY, GOLD, BODY_COLOR, SLATE, MED_GRAY,
     build_styles, make_page_footer, create_doc, add_bullet_list,
@@ -21,23 +22,23 @@ from reportlab.lib.enums import TA_CENTER
 def build_script_styles(base_styles):
     s = dict(base_styles)
     s["script_title"] = ParagraphStyle(
-        "ScriptTitle", fontName="Helvetica-Bold", fontSize=18, leading=22,
+        "ScriptTitle", fontName=FONT_SANS_BOLD, fontSize=18, leading=22,
         textColor=NAVY, alignment=TA_CENTER, spaceAfter=4,
     )
     s["script_meta"] = ParagraphStyle(
-        "ScriptMeta", fontName="Helvetica", fontSize=9, leading=13,
+        "ScriptMeta", fontName=FONT_SANS, fontSize=9, leading=13,
         textColor=MED_GRAY, alignment=TA_CENTER, spaceAfter=16,
     )
     s["script_body"] = ParagraphStyle(
-        "ScriptBody", fontName="Times-Roman", fontSize=12, leading=19,
+        "ScriptBody", fontName=FONT_SERIF, fontSize=12, leading=19,
         textColor=BODY_COLOR, spaceAfter=10,
     )
     s["script_note"] = ParagraphStyle(
-        "ScriptNote", fontName="Helvetica-Oblique", fontSize=9.5, leading=14,
+        "ScriptNote", fontName=FONT_SANS_ITALIC, fontSize=9.5, leading=14,
         textColor=SLATE, spaceAfter=16,
     )
     s["bumped_header"] = ParagraphStyle(
-        "BumpedHeader", fontName="Helvetica-Bold", fontSize=10, leading=14,
+        "BumpedHeader", fontName=FONT_SANS_BOLD, fontSize=10, leading=14,
         textColor=NAVY, spaceBefore=16, spaceAfter=8,
     )
     return s

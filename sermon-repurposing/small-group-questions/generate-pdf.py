@@ -5,7 +5,7 @@ import json
 import sys
 import os
 
-_here = os.path.dirname(os.path.abspath(__file__))
+_here = os.path.dirname(os.path.realpath(__file__))  # resolve junction/symlink installs
 sys.path.insert(0, os.path.join(_here, "..", "..", "shared"))
 
 from pdf_utils import (

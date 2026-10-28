@@ -5,9 +5,10 @@ import json
 import sys
 import os
 
-_here = os.path.dirname(os.path.abspath(__file__))
+_here = os.path.dirname(os.path.realpath(__file__))  # resolve junction/symlink installs
 sys.path.insert(0, os.path.join(_here, "..", "..", "shared"))
 
+from pdf_utils import FONT_SANS, FONT_SANS_BOLD, FONT_SANS_ITALIC, FONT_SERIF, FONT_SERIF_ITALIC
 from pdf_utils import (
     NAVY, GOLD, BODY_COLOR,
     build_styles, make_page_footer, create_doc,
@@ -20,27 +21,27 @@ from reportlab.lib.enums import TA_CENTER, TA_RIGHT, TA_JUSTIFY
 def build_letter_styles(base_styles):
     s = dict(base_styles)
     s["letterhead"] = ParagraphStyle(
-        "Letterhead", fontName="Helvetica-Bold", fontSize=18, leading=22,
+        "Letterhead", fontName=FONT_SANS_BOLD, fontSize=18, leading=22,
         textColor=NAVY, alignment=TA_CENTER, spaceAfter=4,
     )
     s["date_line"] = ParagraphStyle(
-        "DateLine", fontName="Helvetica", fontSize=10, leading=14,
+        "DateLine", fontName=FONT_SANS, fontSize=10, leading=14,
         textColor=BODY_COLOR, alignment=TA_RIGHT, spaceAfter=20,
     )
     s["addressee"] = ParagraphStyle(
-        "Addressee", fontName="Helvetica", fontSize=11, leading=16,
+        "Addressee", fontName=FONT_SANS, fontSize=11, leading=16,
         textColor=BODY_COLOR, spaceAfter=16,
     )
     s["letter_body"] = ParagraphStyle(
-        "LetterBody", fontName="Times-Roman", fontSize=11, leading=17,
+        "LetterBody", fontName=FONT_SERIF, fontSize=11, leading=17,
         textColor=BODY_COLOR, spaceAfter=12, alignment=TA_JUSTIFY,
     )
     s["signature_name"] = ParagraphStyle(
-        "SignatureName", fontName="Helvetica-Bold", fontSize=11, leading=16,
+        "SignatureName", fontName=FONT_SANS_BOLD, fontSize=11, leading=16,
         textColor=NAVY, spaceBefore=28,
     )
     s["signature_title"] = ParagraphStyle(
-        "SignatureTitle", fontName="Helvetica", fontSize=10, leading=14,
+        "SignatureTitle", fontName=FONT_SANS, fontSize=10, leading=14,
         textColor=BODY_COLOR,
     )
     return s
